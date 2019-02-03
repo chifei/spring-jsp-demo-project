@@ -1,0 +1,114 @@
+apply from: file("${rootDir}/gradle/project.gradle")
+
+subprojects {
+    apply from: file("${rootDir}/gradle/quality.gradle")
+
+    group = 'app.jweb.demo'
+    version = '1.0.0'
+}
+
+def springVersion = '5.1.4.RELEASE'
+def jacksonVersion = '2.9.8'
+
+project(':demo-website') {
+    apply from: file("${rootDir}/gradle/web.gradle")
+    apply from: file("${rootDir}/gradle/app.gradle")
+    war.rootSpec.exclude("**/node_modules/")
+
+    dependencies {
+        compile 'javax.inject:javax.inject:1'
+        compile 'com.google.guava:guava:27.0.1-jre'
+        compile 'commons-fileupload:commons-fileupload:1.4'
+        compile "org.springframework:spring-context:${springVersion}"
+        compile "org.springframework:spring-webmvc:${springVersion}"
+        compile "org.springframework:spring-jms:${springVersion}"
+        compile 'org.springframework.data:spring-data-jpa:2.1.4.RELEASE'
+        compile 'org.hibernate:hibernate-core:5.4.1.Final'
+        compile 'org.hibernate.validator:hibernate-validator:6.0.14.Final'
+        compile 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.8'
+        compile 'org.hsqldb:hsqldb:2.3.2'
+        compile 'org.thymeleaf:thymeleaf-spring4:2.1.4.RELEASE'
+        compile 'org.apache.activemq:activemq-broker:5.15.8'
+        compile 'com.opencsv:opencsv:4.4'
+        compile 'org.apache.logging.log4j:log4j-to-slf4j:2.11.1'
+        compile 'org.slf4j:jul-to-slf4j:1.7.25'
+        compile 'ch.qos.logback:logback-classic:1.2.3'
+        compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
+        compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+
+        compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.14.v20181114'
+        compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.4.14.v20181114'
+        compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.14.v20181114'
+        compile group: 'org.eclipse.jetty', name: 'apache-jsp', version: '9.4.14.v20181114'
+        compile group: 'org.eclipse.jetty', name: 'apache-jstl', version: '9.4.14.v20181114'
+        compile 'org.eclipse.jetty:jetty-deploy:9.4.14.v20181114'
+
+        testCompile 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+        testCompile "org.springframework:spring-test:${springVersion}"
+        testCompile 'org.hamcrest:hamcrest-core:2.1'
+        testCompile 'com.jayway.jsonpath:json-path:2.4.0'
+        testCompile 'org.mockito:mockito-core:2.23.4'
+    }
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs "src/main/resources", "src/main/webapp"
+            }
+        }
+    }
+
+    task flatJar(type: Jar) {
+        zip64 true
+        manifest {
+            attributes(
+                    'Main-Class': 'Main'
+            )
+        }
+        from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } } {
+            exclude 'META-INF/*'
+        }
+        from("${projectDir}/src/main/webapp") {
+            include '**/*'
+        }
+        with jar
+    }
+
+    apply plugin: 'org.hidetake.ssh'
+
+    remotes {
+        web {
+            host = System.getProperty("DEMO_SERVER_IP")
+            user = 'ubuntu'
+            identity = System.getProperty("DEMO_SERVER_KEY")
+        }
+    }
+
+    task deploy {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+
+        doLast {
+            ssh.run {
+                session(remotes.web) {
+                    execute "rm -fr /opt/spring-demo-project/*"
+                    println "uploading demo-website.jar"
+                    put from: "${rootDir}/build/demo-website/libs/demo-website-2.1.0.jar", into: '/opt/spring-demo-project'
+                    println "restart demo-website"
+                    execute "sudo supervisorctl restart demo-website"
+                }
+            }
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.hidetake:gradle-ssh-plugin:1.1.3'
+    }
+}

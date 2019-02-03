@@ -1,0 +1,25 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack ",
+    "watch": "webpack --watch --mode=development"
+  },
+  "dependencies": {
+    "jquery": "3.3.1",
+    "kendo-ui-core": "2019.1.130"
+  },
+  "devDependencies": {
+    "bundle-loader": "0.5.5",
+    "css-loader": "0.28.4",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
+    "file-loader": "1.1.11",
+    "html-loader": "0.5.1",
+    "style-loader": "0.21.0",
+    "url-loader": "1.0.1",
+    "webpack": "4.26.1",
+    "webpack-cli": "3.0.2"
+  }
+}
