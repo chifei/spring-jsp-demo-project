@@ -15,8 +15,12 @@ $(document).ready(function() {
             type: "json",
             transport: {
                 read: function(options) {
+                    var params = {};
+                    location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+                        params[k] = v
+                    });
                     var data = {
-                        name: null,
+                        name: params.name,
                         page: options.data.page,
                         limit: options.data.pageSize
                     };

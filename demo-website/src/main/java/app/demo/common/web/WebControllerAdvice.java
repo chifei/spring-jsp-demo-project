@@ -53,7 +53,7 @@ public class WebControllerAdvice {
         return new ModelAndView("/500.jsp", Maps.newHashMap());
     }
 
-    @ModelAttribute("user")
+    @ModelAttribute("userInfo")
     public UserInfo user() {
         return userInfo;
     }

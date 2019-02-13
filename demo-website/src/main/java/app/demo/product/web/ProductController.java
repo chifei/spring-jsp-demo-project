@@ -8,7 +8,6 @@ import app.demo.product.domain.Product;
 import app.demo.product.service.ProductService;
 import app.demo.product.web.product.ProductBean;
 import app.demo.product.web.product.ProductQuery;
-import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.opencsv.CSVWriter;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 
 @Controller
@@ -52,7 +50,6 @@ public class ProductController {
     public String productUpdate(ModelMap model) {
         return "/products/create.jsp";
     }
-
 
     @RequestMapping(value = "/admin/product/{id}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     @LoginRequired
@@ -95,17 +92,17 @@ public class ProductController {
         productQuery.name = name;
         productQuery.page = 1;
         productQuery.limit = 1000;
-        List<Product> productList = Lists.newArrayList();
         Page<Product> productPage = productService.find(productQuery);
-        productList.addAll(productPage.getContent());
+        csvWriter.writeNext(new String[]{"Product Name", "Product Description"});
+        for (Product product : productPage.getContent()) {
+            csvWriter.writeNext(new String[]{product.name, product.description});
+        }
         while (productPage.getTotalPages() > productQuery.page) {
             productQuery.page = productQuery.page + 1;
             productPage = productService.find(productQuery);
-            productList.addAll(productPage.getContent());
-        }
-        csvWriter.writeNext(new String[]{"Product Name", "Product Description"});
-        for (Product product : productList) {
-            csvWriter.writeNext(new String[]{product.name, product.description});
+            for (Product product : productPage.getContent()) {
+                csvWriter.writeNext(new String[]{product.name, product.description});
+            }
         }
         csvWriter.close();
     }

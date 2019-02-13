@@ -37,7 +37,7 @@ body, h1, h2, h3, h4, p, ul, li, a, button, .main-nav, .kendo-nav, #banner p, .b
 body {
     background-color: #fff;
     color: #555;
-    font: 400 12px Roboto,Arial, Helvetica, sans-serif;
+    font: 400 12px Roboto, Arial, Helvetica, sans-serif;
     position: relative;
 }
 
@@ -3674,9 +3674,9 @@ html.k-materialblack .demo-section.k-content {
     background: #333;
 }
 
-#megaStore .k-menu:not(.k-context-menu)>.k-item,
-#megaStore .k-menu:not(.k-context-menu)>.k-item>.k-state-active {
-    color:#fff;
+#megaStore .k-menu:not(.k-context-menu) > .k-item,
+#megaStore .k-menu:not(.k-context-menu) > .k-item > .k-state-active {
+    color: #fff;
 }
 
 .k-link .k-widget.k-upload.k-header {
@@ -3689,4 +3689,13 @@ td .k-button {
 
 td .k-button:last-child {
     margin: 0;
+}
+
+.search-form {
+    display: inline-block;
+}
+
+.search-form > input {
+    display: inline-block;
+    width: 200px !important;
 }

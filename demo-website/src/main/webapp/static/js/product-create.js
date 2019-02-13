@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var validator = $("form").kendoValidator().data("kendoValidator"),
         status = $(".status");
-    $(".tc-activator").click(function () {
+    $(".tc-activator").click(function() {
         if (!validator.validate()) {
             return;
         }
@@ -18,8 +18,8 @@ $(document).ready(function() {
             data: JSON.stringify(object),
             dataType: "json",
             contentType: "application/json"
-        }).then(function (response) {
-            window.location.href = "/admin/product";
+        }).then(function(response) {
+            history.back(1);
         });
     });
 });

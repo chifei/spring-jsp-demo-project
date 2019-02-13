@@ -21,7 +21,7 @@ public class HasPermissionTag extends SimpleTagSupport {
     @Override
     public void doTag() throws JspException, IOException {
         ELContext elContext = getJspContext().getELContext();
-        UserInfo user = (UserInfo) elContext.getELResolver().getValue(elContext, null, "user");
+        UserInfo user = (UserInfo) elContext.getELResolver().getValue(elContext, null, "userInfo");
         if (user != null && user.hasPermission(permission)) {
             getJspBody().invoke(getJspContext().getOut());
         }

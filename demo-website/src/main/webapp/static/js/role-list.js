@@ -1,10 +1,10 @@
 $(document).ready(function () {
     function roleActions() {
         var template = "";
-        if (hasPermission(['role.read'])) {
+        if (hasPermission(['user.read'])) {
             template += "<button class='k-button k-primary'><a href='/admin/user/role/#:data.id#/view' class='k-link k-primary'>" + i18n('product.view') + "</a></button>";
         }
-        if (hasPermission(['role.write'])) {
+        if (hasPermission(['user.write'])) {
             template += "<button class='k-button k-primary'><a href='/admin/user/role/#:data.id#' class='k-link k-primary'>" + i18n('product.edit') + "</a></button><button class='k-button product-delete-btn' data-id='#:data.id#'>" + i18n('product.delete') + "</button>";
         }
         return template;

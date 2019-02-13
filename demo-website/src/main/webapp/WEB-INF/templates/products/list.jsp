@@ -26,17 +26,22 @@
             <strong>${msg}</strong>
         </div>
     </c:if>
-    <j:hasPermission permission="product.write">
-        <div class="themechooser" data-role="details">
+    <div class="themechooser" data-role="details">
+        <form action="" method="GET" class="search-form">
+            <input id="name" name="name" type="text" required class="k-textbox" value="${param.name}" style="width: 100%;"/>
+            <button type="submit" class="k-link k-button k-primary tc-activator"><spring:message code="product.search"/></button>
+        </form>
+
+        <j:hasPermission permission="product.write">
             <a href="/admin/product/create" class="k-link k-button k-primary tc-activator"><spring:message code="product.createProduct"/></a>
-            <label for="files" class="k-link k-button k-primary tc-activator">
+            <label for="files" class="k-link k-button tc-activator">
                 <spring:message code="product.upload"/>
                 <input name="file" id="files" type="file"/>
             </label>
-            <a href="/admin/product/export" class="k-link k-button k-primary tc-activator"><spring:message code="product.export"/></a>
-            <a href="/admin/product/template/download" class="k-link k-button k-primary tc-activator"><spring:message code="product.templateDownload"/></a>
-        </div>
-    </j:hasPermission>
+            <a href="/admin/product/export?name=${param.name}" class="k-link k-button tc-activator"><spring:message code="product.export"/></a>
+            <a href="/admin/product/template/download" class="k-link k-button tc-activator"><spring:message code="product.templateDownload"/></a>
+        </j:hasPermission>
+    </div>
     <h1 id="exampleTitle">
         <strong><spring:message code="product.product"/></strong>
     </h1>
